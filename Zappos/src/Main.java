@@ -11,91 +11,59 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Main
 {
+	private static HashMap<Integer, ArrayList<Product>> productMap;
 	public static void main(String[] args)
 	{
 		/*Combinations test = new Combinations(5, 25);
 		test.solve();*/
 		
 		int numGifts = 3;
-		int totalPrice = 50;
+		int totalPrice = 20;
 		
 		APIClient api = new APIClient();
 	
 		System.out.println("Bear with us, we're downloading a lot of data");
-		HashMap<Integer, ArrayList<Product>> productMap = new HashMap<Integer, ArrayList<Product>>(api.getProducts(numGifts, totalPrice));
+		productMap = new HashMap<Integer, ArrayList<Product>>(api.getProducts(numGifts, totalPrice));
+		
+		for(int pricePoint : productMap.keySet())
+		{
+			generateProductOptionPage(pricePoint);
+		}
 		
 		System.out.println("Okay we got it, finding your gift giving options now!");
 		Combinations2 priceCombinator = new Combinations2(numGifts, totalPrice, productMap);
 		HashSet<ArrayList<Integer>> priceCombinations = priceCombinator.getAllLists();
+		
+		
 
 		System.out.println("There's a lot of results, so we're trying to make it a little easier on the eyes");
-		File output = new File("output.csv");
-		File htmlOutput = new File("output.html");
 
-		// creates a FileWriter Object
-		FileWriter writer;
+	}
+	private static void generateProductOptionPage(int pricePoint)
+	{
+		File htmlOutput = new File(pricePoint+".html");
 		FileWriter html;
 		try {
-			writer = new FileWriter(output);
 			html = new FileWriter(htmlOutput);
-			html.write("<table>");
-			for(ArrayList<Integer> priceCombo : priceCombinations)
+			html.write("<h1>Product Choices for Approx. $"+pricePoint+"</h1>");
+			
+			for(Product choice : productMap.get(pricePoint))
 			{
-				ArrayList<ArrayList<Product>> arrayOfCombos = new ArrayList<ArrayList<Product>>();
-				boolean[] hasMoreChoices = new boolean[priceCombo.size()];
-				for(int i = 0; i < hasMoreChoices.length; i++ )
-				{
-					hasMoreChoices[i] = true;
-				}
-				html.write("<tr>");
-				for(int pricePoint : priceCombo)
-				{
-					html.write("<td>~$"+pricePoint+"</td><td></td>");
-					writer.write("~$" + pricePoint + ",,");
-					arrayOfCombos.add(productMap.get(pricePoint));
-				}
-				html.write("</tr>");
-				writer.write("\n");
-				int count = 0;
-				while(atLeastOneTrue(hasMoreChoices))
-				{
-					html.write("<tr>");
-					for(int i = 0; i < priceCombo.size(); i++)
-					{	
-						if(hasMoreChoices[i])
-						{
-							Product choice = arrayOfCombos.get(i).get(count);
-							html.write("<td>$"+choice.price+"</td><td>"+choice.productId+"</td>");
-							writer.write("$"+choice.price + "," + choice.productId + ",");
-						}
-						else
-						{
-							writer.write("," + ",");
-							html.write("<td></td><td></td>");
-						}
-						if(arrayOfCombos.get(i).size()-1 < (count+1))
-						{
-							hasMoreChoices[i] = false;
-						}
-					}
-					count++;
-					html.write("</tr>");
-					writer.write("\n");
-					
-				}
-				
-				writer.write("\n");
+				html.write("<a href=\""+choice.productPageUrl+"\">");
+				html.write("<div style=\"float:left;width:150px; height: 200px; padding: 20px;text-align:center\">");
+				html.write(choice.productName+"<br>");
+				html.write("<img src=\""+choice.productImageUrl+"\" />");
+				html.write("</div>");
+				html.write("</a>");
 			}
-			html.write("</table>");
+			
 			html.flush();
 			html.close();
-			writer.flush();
-			writer.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
-		// Writes the content to the file
+		
 	}
 	private static boolean atLeastOneTrue(boolean[] options)
 	{

@@ -28,13 +28,16 @@ public class PageFetcher implements Runnable
 		{
 			String productId = results.getJSONObject(i).getString("productId");
 			double price = APIClient.getPriceFromString(results.getJSONObject(i).getString("price"));
+			String productUrl = results.getJSONObject(i).getString("productUrl");
+			String productImageUrl = results.getJSONObject(i).getString("thumbnailImageUrl");
+			String productName = results.getJSONObject(i).getString("productName");
 			if(price > maxPricePerItem)
 				break;
 			int intPrice = (int)Math.round(price);
 			if(productMap.containsKey(intPrice))
 			{
 				synchronized (productMap) {
-					productMap.get(intPrice).add(new Product(productId, price));
+					productMap.get(intPrice).add(new Product(productId, price, productUrl, productImageUrl, productName));
 				}
 			}
 			else
@@ -43,12 +46,12 @@ public class PageFetcher implements Runnable
 					if(!productMap.containsKey(intPrice))
 					{
 						ArrayList<Product> temp = new ArrayList<Product>();
-						temp.add(new Product(productId, price));
+						temp.add(new Product(productId, price, productUrl, productImageUrl, productName));
 						productMap.put(intPrice, temp);
 					}
 					else
 					{
-						productMap.get(intPrice).add(new Product(productId, price));
+						productMap.get(intPrice).add(new Product(productId, price, productUrl, productImageUrl, productName));
 					}
 				
 				}
