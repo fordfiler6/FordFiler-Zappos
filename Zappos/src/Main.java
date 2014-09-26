@@ -12,13 +12,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Main
 {
 	private static HashMap<Integer, ArrayList<Product>> productMap;
+	static HashSet<ArrayList<Integer>> priceCombinations;
 	public static void main(String[] args)
 	{
 		/*Combinations test = new Combinations(5, 25);
 		test.solve();*/
 		
 		int numGifts = 3;
-		int totalPrice = 20;
+		int totalPrice = 150;
 		
 		APIClient api = new APIClient();
 	
@@ -32,11 +33,12 @@ public class Main
 		
 		System.out.println("Okay we got it, finding your gift giving options now!");
 		Combinations2 priceCombinator = new Combinations2(numGifts, totalPrice, productMap);
-		HashSet<ArrayList<Integer>> priceCombinations = priceCombinator.getAllLists();
+		priceCombinations = priceCombinator.getAllLists();
 		
-		
-
 		System.out.println("There's a lot of results, so we're trying to make it a little easier on the eyes");
+		generatePriceChoicePage();
+
+		
 
 	}
 	private static void generateProductOptionPage(int pricePoint)
@@ -65,13 +67,42 @@ public class Main
 		} 
 		
 	}
-	private static boolean atLeastOneTrue(boolean[] options)
+	private static void generatePriceChoicePage()
 	{
-		for(boolean option : options)
-		{
-			if(option)
-				return true;
-		}
-		return false;
+		File htmlOutput = new File("giftChoices.html");
+		
+		FileWriter html;
+		try {
+			html = new FileWriter(htmlOutput);
+			html.write("<h1>You can purchase gifts in the following ways</h1>");
+			html.write("<ol style=\"font-size:18px;line-height:1.5em\">");
+			for(ArrayList<Integer> priceCombo : priceCombinations)
+			{
+				
+				html.write("<li>");
+				for(int i = 0; i < priceCombo.size(); i++)
+				{
+					
+					html.write("<a style=\"color:#0645AD\" href=\""+priceCombo.get(i) +".html\" target=\"_blank\" >$"+priceCombo.get(i)+" item</a>, ");
+					if(i == priceCombo.size()-2)
+					{
+						html.write("and ");
+					}
+				}
+				html.write("</li>");
+				
+			}
+			html.write("</ol>");
+			html.flush();
+			html.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		System.out.println("All Done! Copy paste the following URL into your browser to view the results");
+		System.out.println(htmlOutput.getAbsolutePath());
+		
 	}
+
 }
