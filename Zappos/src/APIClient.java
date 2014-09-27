@@ -111,11 +111,12 @@ public class APIClient
 		try {
 			URL urlObj = new URL(url);
 	        BufferedReader in = new BufferedReader(new InputStreamReader(urlObj.openStream()));
-
             String inputLine;
             while ((inputLine = in.readLine()) != null)
                 result += inputLine;
             in.close();
+            
+            
 
 		} catch (MalformedURLException e) {
 			return result;

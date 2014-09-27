@@ -18,14 +18,14 @@ public class Main
 		/*Combinations test = new Combinations(5, 25);
 		test.solve();*/
 		
-		int numGifts = 3;
+		int numGifts = 5;
 		int totalPrice = 150;
 		
 		APIClient api = new APIClient();
 	
 		System.out.println("Bear with us, we're downloading a lot of data");
 		productMap = new HashMap<Integer, ArrayList<Product>>(api.getProducts(numGifts, totalPrice));
-		
+		System.out.println();
 		for(int pricePoint : productMap.keySet())
 		{
 			generateProductOptionPage(pricePoint);
@@ -34,7 +34,7 @@ public class Main
 		System.out.println("Okay we got it, finding your gift giving options now!");
 		Combinations2 priceCombinator = new Combinations2(numGifts, totalPrice, productMap);
 		priceCombinations = priceCombinator.getAllLists();
-		
+		System.out.println(priceCombinations.size());
 		System.out.println("There's a lot of results, so we're trying to make it a little easier on the eyes");
 		generatePriceChoicePage();
 
@@ -48,7 +48,6 @@ public class Main
 		try {
 			html = new FileWriter(htmlOutput);
 			html.write("<h1>Product Choices for Approx. $"+pricePoint+"</h1>");
-			
 			for(Product choice : productMap.get(pricePoint))
 			{
 				html.write("<a href=\""+choice.productPageUrl+"\">");

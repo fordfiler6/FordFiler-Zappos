@@ -6,12 +6,10 @@ import java.util.HashSet;
 
 public class Combinations2 
 {
-	private StringBuilder output = new StringBuilder();
     private int numGifts, totalPrice;
     private HashSet<ArrayList<Integer>> products;
     private HashMap<Integer, Boolean> prices;
     private int lowestPrice;
-    private static int runCount = 0;
     public Combinations2(int numGifts, int totalPrice, HashMap<Integer, ArrayList<Product>> productMap)
 	{
     	
@@ -72,8 +70,6 @@ public class Combinations2
     			{
 		            for(ArrayList<Integer> curElements : elements)
 		            {
-	                
-	                	runCount++;
 	                    ArrayList<Integer> temp = new ArrayList<Integer>();
 	                    temp.addAll(curElements);
 	                    temp.addAll(sublist);

@@ -20,7 +20,7 @@ public class PageFetcher implements Runnable
 	@Override
 	public void run() {
 		String result = APIClient.getContents(url);
-		
+		System.out.print(".");
 		JSONObject responseObj = new JSONObject(result);
 
 		JSONArray results = responseObj.getJSONArray("results");
