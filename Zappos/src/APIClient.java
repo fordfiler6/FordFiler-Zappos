@@ -82,11 +82,19 @@ public class APIClient
 			{
 				high = mid;
 				mid = ceil((high+low)/2.0);
+				if(high == 1)
+				{
+					endPage = 1;
+				}
 			}
 			else if(maxPricePerItem > highPrice)
 			{
 				low = mid;
 				mid = ceil((high+low)/2.0);
+				if(low == high)
+				{
+					endPage = numPages;
+				}
 			}
 			else
 			{
@@ -102,6 +110,7 @@ public class APIClient
 	
 	public static double getPriceFromString(String input)
 	{
+		input = input.replaceAll(",", "");
 		return Double.parseDouble(input.substring(1));
 	}
 	

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -13,14 +14,51 @@ public class Main
 {
 	private static HashMap<Integer, ArrayList<Product>> productMap;
 	static HashSet<ArrayList<Integer>> priceCombinations;
+	static int numGifts;
+	static int totalPrice;
 	public static void main(String[] args)
 	{
-		/*Combinations test = new Combinations(5, 25);
-		test.solve();*/
+		Scanner scan = new Scanner(System.in);
+		numGifts = 0;
+		totalPrice = 0;
 		
-		int numGifts = 5;
-		int totalPrice = 150;
 		
+		while(numGifts <= 1)
+		{
+			System.out.print("How many gifts are you looking to purchase? ");
+			String tempNumGifts = scan.next();
+			try
+			{
+				numGifts = Integer.parseInt(tempNumGifts);
+				if(numGifts <= 1)
+				{
+					System.out.println("Please enter a valid integer greater than one.");
+				}
+			} catch (NumberFormatException nfe)
+			{
+				System.out.println("Please enter a valid integer.");
+				numGifts = 0;
+			}
+		}
+		
+		while(totalPrice <= 0)
+		{
+			System.out.print("What's your total budget? ");
+			String tempTotalPrice = scan.next();
+			try
+			{
+				totalPrice = Integer.parseInt(tempTotalPrice);
+				if(totalPrice <= 0)
+				{
+					System.out.println("Please enter a valid integer greater than zero.");
+				}
+			} catch (NumberFormatException nfe)
+			{
+				System.out.println("Please enter a valid integer.");
+				totalPrice = 0;
+			}
+		}
+		scan.close();
 		APIClient api = new APIClient();
 	
 		System.out.println("Bear with us, we're downloading a lot of data");
@@ -34,7 +72,6 @@ public class Main
 		System.out.println("Okay we got it, finding your gift giving options now!");
 		Combinations2 priceCombinator = new Combinations2(numGifts, totalPrice, productMap);
 		priceCombinations = priceCombinator.getAllLists();
-		System.out.println(priceCombinations.size());
 		System.out.println("There's a lot of results, so we're trying to make it a little easier on the eyes");
 		generatePriceChoicePage();
 
@@ -74,7 +111,12 @@ public class Main
 		try {
 			html = new FileWriter(htmlOutput);
 			html.write("<h1>You can purchase gifts in the following ways</h1>");
-			html.write("<ol style=\"font-size:18px;line-height:1.5em\">");
+			html.write("<ol style=\"font-size:18px;line-height:1.5em;padding-left:70px;\">");
+			if(priceCombinations.size() == 0)
+			{
+				html.write("It looks like there's no combinations of " + numGifts + " gifts that cost close to $" + totalPrice);
+				html.write("<br>Please try again with different inputs");
+			}
 			for(ArrayList<Integer> priceCombo : priceCombinations)
 			{
 				
@@ -89,7 +131,6 @@ public class Main
 					}
 				}
 				html.write("</li>");
-				
 			}
 			html.write("</ol>");
 			html.flush();
