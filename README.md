@@ -10,7 +10,6 @@ Program operation:
 The program takes the two inputs and uses them to do the following.
 
 1. Download all relevant data from Zappos, that is all products whose price falls between 0 and (totalPrice - ((numGifts-1)*lowestPrice). That is to say all products that may actually be useful in making gift combinations.
-
 During the process of downloading the products, also store a list of price points rounded to the nearest whole dollar. Since most products are priced at *.99, *.95, and *.00, rounding gives only a very small variance from the total requested price. In the worst case, the total's end up being off by a few dollars. This trade off seems worth it as it exponentially simplifies combination finding.
 
 2. Use the price points stored to generate all possible combinations of price points that add up to the desired total price.
