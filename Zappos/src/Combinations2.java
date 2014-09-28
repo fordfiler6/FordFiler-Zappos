@@ -35,20 +35,17 @@ public class Combinations2
     public HashSet<ArrayList<Integer>> getAllLists(int lengthOfList)
     {
     	HashSet<ArrayList<Integer>> elements = products;
-        //initialize our returned list with the number of elements calculated above
     	HashSet<ArrayList<Integer>> allLists = new HashSet<ArrayList<Integer>>();
         
         //lists of length 1 are just the original elements
         if(lengthOfList == 1) return elements;
         else
         {
-            //the recursion--get all lists of length 3, length 2, all the way up to 1
         	HashSet<ArrayList<Integer>> allSublists = getAllLists(lengthOfList-1);
             
     		for(ArrayList<Integer> sublist : allSublists)
             {
-    			//if only one more is needed - check hash map for availilibit
-    			// 
+    			//if only one more is needed - check hash map for price point (rather than finding all combinations)
     			if(sublist.size() == numGifts-1)
     			{
     				 int sum = 0;
@@ -78,11 +75,13 @@ public class Combinations2
 	                    {
 	                    	sum += price;
 	                    }
+	                    //short circuit if the combination is already too expensive
 	                    if(sum + ((numGifts-temp.size())*lowestPrice)  <= totalPrice && temp.size() != numGifts)
 	                    {
 	                		Collections.sort(temp);
 	                		allLists.add(temp);	
 	                    }
+	                    //only add combinations with the right total to the final list
 	                    else if(sum == totalPrice && temp.size() == numGifts)
 	                    {
 	                    	Collections.sort(temp);
