@@ -18,5 +18,6 @@ During the process of downloading the products, also store a list of price point
 
 
 Compilation details
+
 The Zappos folder in this repository is an Eclipse project, which should be importable into Eclipse for easy excution.
 If compiling in a different way, be sure to include the packaged json.jar in the buildpath, as it is necessary for processing API responses
